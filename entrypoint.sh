@@ -553,7 +553,7 @@ echo "---------------------"
 
 mkdir local_source   #to store one or mix two source
 
-git clone -b ${INPUT_SOURCE_BRANCH} https://${SOURCE_GIT_NAME}:${SOURCE_TOKEN}@${INPUT_SOURCE_HUB}/${SOURCE_REPO}.git  local_source_temp
+git clone -b ${INPUT_SOURCE_BRANCH} https://${SOURCE_TOKEN}@${INPUT_SOURCE_HUB}/${SOURCE_REPO}.git  local_source_temp
 
 if [ $? -eq 0 ]; then  # clone success
 
@@ -590,7 +590,7 @@ fi
 
 
 if [ ${INPUT_SOURCE2_REPO} != "null" ]; then
-  git clone -b ${INPUT_SOURCE2_BRANCH} https://${SOURCE2_GIT_NAME}:${SOURCE2_TOKEN}@${INPUT_SOURCE2_HUB}/${SOURCE2_REPO}.git  local_source2_temp 
+  git clone -b ${INPUT_SOURCE2_BRANCH} https://${SOURCE2_TOKEN}@${INPUT_SOURCE2_HUB}/${SOURCE2_REPO}.git  local_source2_temp 
   if [ $? -eq 0 ]; then
     if [ ${INPUT_SOURCE2_EDIT_TIME} = "true" ] ; then
       cd local_source2_temp
@@ -629,11 +629,11 @@ echo "--------------------------------------------"
 print_info "STEP3  git_clone_history_publish"
 echo "----------------------------"
 
-git clone -b ${INPUT_PUBLISH_BRANCH} https://${PUBLISH_GIT_NAME}:${PUBLISH_TOKEN}@${INPUT_PUBLISH_HUB}/${PUBLISH_REPO}.git  local_publish 
+git clone -b ${INPUT_PUBLISH_BRANCH} https://${PUBLISH_TOKEN}@${INPUT_PUBLISH_HUB}/${PUBLISH_REPO}.git  local_publish 
 if [ $? -eq 0 ]; then  # git clone this repo.branch success
   print_info "Message:publish git success"
 else  # can't git clone this repo.branch try git clone this repo
-  git clone  https://${PUBLISH_GIT_NAME}:${PUBLISH_TOKEN}@${INPUT_PUBLISH_HUB}/${PUBLISH_REPO}.git  local_publish 
+  git clone  https://${PUBLISH_TOKEN}@${INPUT_PUBLISH_HUB}/${PUBLISH_REPO}.git  local_publish 
   if [ $? -eq 0 ]; then # clone repo success, create new branch
     cd local_publish
     git checkout --orphan  ${INPUT_PUBLISH_BRANCH}
@@ -651,11 +651,11 @@ fi
 # The following is the same with above .
 # Can use loop, but for different function later(like backup), I'm not
 if [ ${INPUT_PUBLISH2_REPO} != "null" ]; then
-  git clone -b ${INPUT_PUBLISH2_BRANCH} https://${PUBLISH2_GIT_NAME}:${PUBLISH2_TOKEN}@${INPUT_PUBLISH2_HUB}/${PUBLISH2_REPO}.git  local_publish2 
+  git clone -b ${INPUT_PUBLISH2_BRANCH} https://${PUBLISH2_TOKEN}@${INPUT_PUBLISH2_HUB}/${PUBLISH2_REPO}.git  local_publish2 
   if [ $? -eq 0 ]; then
     print_info "Message:publish2 git success"
   else
-    git clone  https://${PUBLISH2_GIT_NAME}:${PUBLISH2_TOKEN}@${INPUT_PUBLISH2_HUB}/${PUBLISH2_REPO}.git  local_publish2 
+    git clone  https://${PUBLISH2_TOKEN}@${INPUT_PUBLISH2_HUB}/${PUBLISH2_REPO}.git  local_publish2 
     if [ $? -eq 0 ]; then
       cd local_publish2
       git checkout --orphan  ${INPUT_PUBLISH2_BRANCH}
@@ -672,11 +672,11 @@ if [ ${INPUT_PUBLISH2_REPO} != "null" ]; then
 fi
 
 if [ ${INPUT_PUBLISH3_REPO} != "null" ]; then
-  git clone -b ${INPUT_PUBLISH3_BRANCH} https://${PUBLISH3_GIT_NAME}:${PUBLISH3_TOKEN}@${INPUT_PUBLISH3_HUB}/${PUBLISH3_REPO}.git  local_publish3 
+  git clone -b ${INPUT_PUBLISH3_BRANCH} https://${PUBLISH3_TOKEN}@${INPUT_PUBLISH3_HUB}/${PUBLISH3_REPO}.git  local_publish3 
   if [ $? -eq 0 ]; then
     print_info "Message:publish3 git success"
   else
-    git clone  https://${PUBLISH3_GIT_NAME}:${PUBLISH3_TOKEN}@${INPUT_PUBLISH3_HUB}/${PUBLISH3_REPO}.git  local_publish3 
+    git clone  https://${PUBLISH3_TOKEN}@${INPUT_PUBLISH3_HUB}/${PUBLISH3_REPO}.git  local_publish3 
     if [ $? -eq 0 ]; then
       cd local_publish3
       git checkout --orphan  ${INPUT_PUBLISH3_BRANCH}
@@ -852,12 +852,12 @@ fi
 
 
 # git push
-git push https://${PUBLISH_GIT_NAME}:${PUBLISH_TOKEN}@${INPUT_PUBLISH_HUB}/${PUBLISH_REPO}.git  ${INPUT_PUBLISH_BRANCH}:${INPUT_PUBLISH_BRANCH}
+git push https://${PUBLISH_TOKEN}@${INPUT_PUBLISH_HUB}/${PUBLISH_REPO}.git  ${INPUT_PUBLISH_BRANCH}:${INPUT_PUBLISH_BRANCH}
 if [ $? -eq 0 ]; then
   print_info "Message:publish success"
 elif [ ${INPUT_PUBLISH_PUSH_FORCE}  = "true" ]  ; then  # try push force
   print_warning "3305:Can't push publish_repo/branch, try push force"
-    git push --force https://${PUBLISH_GIT_NAME}:${PUBLISH_TOKEN}@${INPUT_PUBLISH_HUB}/${PUBLISH_REPO}.git  ${INPUT_PUBLISH_BRANCH}:${INPUT_PUBLISH_BRANCH}
+    git push --force https://${PUBLISH_TOKEN}@${INPUT_PUBLISH_HUB}/${PUBLISH_REPO}.git  ${INPUT_PUBLISH_BRANCH}:${INPUT_PUBLISH_BRANCH}
     if [ $? -eq 0 ]; then
       print_warning "3306:Push force success"
     else
@@ -920,12 +920,12 @@ if [ ${INPUT_PUBLISH2_REPO} != "null" ]; then
     git commit -m "${PUBLISH2_COMMIT_MESSAGE}"
   fi
 
-  git push https://${PUBLISH2_GIT_NAME}:${PUBLISH2_TOKEN}@${INPUT_PUBLISH2_HUB}/${PUBLISH2_REPO}.git  ${INPUT_PUBLISH2_BRANCH}:${INPUT_PUBLISH2_BRANCH}
+  git push https://${PUBLISH2_TOKEN}@${INPUT_PUBLISH2_HUB}/${PUBLISH2_REPO}.git  ${INPUT_PUBLISH2_BRANCH}:${INPUT_PUBLISH2_BRANCH}
   if [ $? -eq 0 ]; then
     print_info "Message:publish2 success"
   elif [ ${INPUT_PUBLISH2_PUSH_FORCE}  = "true" ] ; then
     print_warning "3305-2:Can't push publish2_repo/branch, try push force"
-      git push --force https://${PUBLISH2_GIT_NAME}:${PUBLISH2_TOKEN}@${INPUT_PUBLISH2_HUB}/${PUBLISH2_REPO}.git  ${INPUT_PUBLISH2_BRANCH}:${INPUT_PUBLISH2_BRANCH}
+      git push --force https://${PUBLISH2_TOKEN}@${INPUT_PUBLISH2_HUB}/${PUBLISH2_REPO}.git  ${INPUT_PUBLISH2_BRANCH}:${INPUT_PUBLISH2_BRANCH}
       if [ $? -eq 0 ]; then
         print_warning "3306-2:Push force success"
       else
@@ -989,12 +989,12 @@ if [ ${INPUT_PUBLISH3_REPO} != "null" ]; then
   fi
 
 
-  git push https://${PUBLISH3_GIT_NAME}:${PUBLISH3_TOKEN}@${INPUT_PUBLISH3_HUB}/${PUBLISH3_REPO}.git  ${INPUT_PUBLISH3_BRANCH}:${INPUT_PUBLISH3_BRANCH}
+  git push https://${PUBLISH3_TOKEN}@${INPUT_PUBLISH3_HUB}/${PUBLISH3_REPO}.git  ${INPUT_PUBLISH3_BRANCH}:${INPUT_PUBLISH3_BRANCH}
   if [ $? -eq 0 ]; then
     print_info "Message:publish3 success"
   elif [ ${INPUT_PUBLISH3_PUSH_FORCE}  = "true" ] ; then
     print_warning "3305-3:Can't push publish3_repo/branch, try push force"
-      git push --force https://${PUBLISH3_GIT_NAME}:${PUBLISH3_TOKEN}@${INPUT_PUBLISH3_HUB}/${PUBLISH3_REPO}.git  ${INPUT_PUBLISH3_BRANCH}:${INPUT_PUBLISH3_BRANCH}
+      git push --force https://${PUBLISH3_TOKEN}@${INPUT_PUBLISH3_HUB}/${PUBLISH3_REPO}.git  ${INPUT_PUBLISH3_BRANCH}:${INPUT_PUBLISH3_BRANCH}
       if [ $? -eq 0 ]; then
         print_warning "3306-3:Push force success"
       else
