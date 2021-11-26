@@ -271,6 +271,10 @@ inputs:
   prepare_install:
     description: 'Some install for prepare'
     required: false
+  pull_request:
+    description: 'Default false. run on pull request'
+    required: false
+    default: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -348,3 +352,4 @@ runs:
     - ${{ inputs.not_clean }}
     - ${{ inputs.font_install }}
     - ${{ inputs.prepare_install }}
+    - ${{ inputs.pull_request}}

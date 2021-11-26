@@ -33,8 +33,11 @@ if [ -n "${INPUT_TOKEN}" ]; then
   print_info "TOKEN provided"
   TOKEN=${INPUT_TOKEN}
 else
-  print_error "3101 need token please"
-  
+  if [ "${INPUT_PULL_REQUEST}" = "false" ]; then
+    print_error "3101 need token please"
+  else
+    echo "Pull request build"
+  fi
 fi
 
 # Set time for some plugins
@@ -539,6 +542,61 @@ if [ -n "${INPUT_GITBOOK_CLI_VERSION}" ]; then
   npm install gitbook-cli@${INPUT_GITBOOK_CLI_VERSION}  -g
 else
   echo "gitbook-cli 2.3.2"
+fi
+
+if [ "${INPUT_PULL_REQUEST}" = "true" ]; then
+  echo "--------------------"
+  echo "FOR pull request"
+  echo "----------"
+
+  cd ${GITHUB_WORKSPACE}
+  ls
+
+  gitbook build --gitbook=${GITBOOK_BUILD_VERSION}
+  if [ $? -eq 0 ]; then
+    print_info "Message:gitbook built success"
+  else  # need plugins or README.md SUMMARY.md
+    print_warning "3303:gitbook built fail, maybe need some file or plugins, now we try again"
+    gitbook init
+    gitbook install
+    gitbook build --gitbook=${GITBOOK_BUILD_VERSION}
+    if [ $? -eq 0 ]; then  # build again success with plugins
+      print_info "Message:gitbook built success(with plugins)"
+    else
+      print_error "3105:gitbook built fail,please check is there something wrong with your book.json or others"
+    fi
+  fi
+
+  # install font
+  if ${INPUT_GITBOOK_PDF} || ${INPUT_GITBOOK_EPUB} || ${INPUT_GITBOOK_MOBI} ; then
+    if [ -n "${INPUT_FONT_INSTALL}" ]; then 
+      apt-get update
+      apt-get install sudo -y
+      print_info "Message:Runing user's font_install"
+      ${INPUT_FONT_INSTALL}
+      #sudo apt-get install fonts-noto-cjk
+      #sudo apt-get install ttf-mscorefonts-installer
+    else
+      print_warning "3308:Not install any font, maybe affect the pdf/mobi/epub, can add font_install at book.json"
+    fi
+  fi
+
+  # gitbook pdf
+  if ${INPUT_GITBOOK_PDF} ; then
+    mkdir -p _book/${INPUT_GITBOOK_PDF_DIR}
+    gitbook pdf ./  ./_book/${INPUT_GITBOOK_PDF_DIR}/${INPUT_GITBOOK_PDF_NAME}.pdf
+  fi
+  if ${INPUT_GITBOOK_EPUB} ; then
+    mkdir -p _book/${INPUT_GITBOOK_EPUB_DIR}
+    gitbook epub ./  ./_book/${INPUT_GITBOOK_EPUB_DIR}/${INPUT_GITBOOK_EPUB_NAME}.epub
+  fi
+  if ${INPUT_GITBOOK_MOBI} ; then
+    mkdir -p _book/${INPUT_GITBOOK_MOBI_DIR}
+    gitbook mobi ./  ./_book/${INPUT_GITBOOK_MOBI_DIR}/${INPUT_GITBOOK_MOBI_NAME}.mobi
+  fi
+
+  cd ..
+  exit 0
 fi
 
 
